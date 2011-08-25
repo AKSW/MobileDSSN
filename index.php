@@ -1,5 +1,5 @@
 <?php
-
+header('Access-Control-Allow-Origin: *');
 include_once("phplibs/graphite/arc/ARC2.php");
 include_once("phplibs/graphite/Graphite.php");
 
@@ -9,4 +9,3 @@ $graph = new Graphite();
 $graph->load( $url );
 print $graph->serialize( "RDFJSON" );
 
-?>
