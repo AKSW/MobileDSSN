@@ -1,17 +1,64 @@
 <!doctype html>
 <html>
 	<head>
-		<title>test</title>
+		<!-- meta stuff -->
 		<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<!-- css -->
+		<link rel="stylesheet"  href="css/jquery.mobile-min.css" />
+		<link rel="stylesheet"  href="css/main.css" />
+		
+		<!-- jquery -->
 		<script type="text/javascript" src="jslibs/jquery.min.js"></script>
 		<script type="text/javascript" src="jslibs/jquery.json-2.2.min.js"></script>
 		
+		<!-- rdf -->
 		<script type="text/javascript" src="jslibs/jquery.rdfquery.core.min-1.0.js"></script>
 		
+		<!-- jquery mobile -->
+		<script src="jslibs/jquery.mobile-min.js"></script>
+		
+		<!-- main js script -->
 		<script type="text/javascript" src="main.js"></script>
+		
+		<title>MobileDSSN</title>
 	</head>
 	<body>
-		working..
+		<div data-role="page" id="homePage">
+			<div data-role="header">
+				<h1>MobileDSSN</h1>
+			</div>
+		
+			<div data-role="content">
+				<button id="loadProfile">Load Profile</button>
+			</div>
+		</div>
+		
+		<div data-role="page" id="profilePage">
+			<div data-role="header">
+				<h1 id="profile_title">MobileDSSN</h1>
+			</div>
+		
+			<div data-role="content">
+				<div class="ui-grid-a">
+					<div class="ui-block-a"><img class="userpic" id="user_image"></div>
+					<div class="ui-block-b"><strong id="user_name"></strong></div>
+				</div>
+				<hr />
+				<div>
+					Birthday: <strong id="user_bday"></strong>
+				</div>
+				<div>
+					Weblog: <strong id="user_weblog"></strong>
+				</div>
+				<div>
+					Knows: 
+					<ul data-role="listview" data-inset="true" id="user_knows">
+					</ul>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>
 
