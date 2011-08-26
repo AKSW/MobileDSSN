@@ -11,20 +11,38 @@
 		
 		<!-- jquery -->
 		<script type="text/javascript" src="jslibs/jquery.min.js"></script>
+		
+		<!-- JSON plugin -->
 		<script type="text/javascript" src="jslibs/jquery.json-2.2.min.js"></script>
+		
+		<!-- templates -->
+		<script type="text/javascript" src="jslibs/jquery.tmpl.min.js"></script>
 		
 		<!-- rdf -->
 		<script type="text/javascript" src="jslibs/jquery.rdfquery.core.min-1.0.js"></script>
 		
+		<!-- atom -->
+		<script type="text/javascript" src="jslibs/jquery.jfeed.min.js"></script>
+		
 		<!-- jquery mobile -->
 		<script src="jslibs/jquery.mobile-min.js"></script>
 		
+		<!-- dssn class -->
+		<script type="text/javascript" src="js/dssn.js"></script>
+		
 		<!-- main js script -->
-		<script type="text/javascript" src="main.js"></script>
+		<script type="text/javascript" src="js/main.js"></script>
 		
 		<title>MobileDSSN</title>
 	</head>
 	<body>
+		<!-- TEMPLATES -->
+		<script id="feedTemplate" type="text/x-jquery-tmpl">
+			<li><a href="${id}">${title}</a></li>
+		</script>
+		
+			
+		<!-- home page -->
 		<div data-role="page" id="homePage">
 			<div data-role="header">
 				<h1>MobileDSSN</h1>
@@ -35,6 +53,7 @@
 			</div>
 		</div>
 		
+		<!-- profile page -->
 		<div data-role="page" id="profilePage">
 			<div data-role="header">
 				<h1 id="profile_title">MobileDSSN</h1>
@@ -57,6 +76,21 @@
 					<ul data-role="listview" data-inset="true" id="user_knows">
 					</ul>
 				</div>
+				<div>
+					<button id="user_stream">Show Stream</button>
+				</div>
+			</div>
+		</div>
+		
+		<!-- feed page -->
+		<div data-role="page" id="feedPage">
+			<div data-role="header">
+				<h1 id="feed_title">MobileDSSN</h1>
+			</div>
+		
+			<div data-role="content">
+				<ul data-role="listview" data-inset="true" id="feed_items">
+				</ul>
 			</div>
 		</div>
 	</body>
