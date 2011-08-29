@@ -1,91 +1,106 @@
-// global service
-var dssn;
-
 // constructor
 $(document).ready(function(){
 	// create new dssn controller
-	dssn = new DSSN();
-});
-
-// loads profile
-$('#loadProfile').live('vclick',function(event){
-	// foaf profile uri
-	var resourceURI = "http://bob.lod2.eu/id/bob";
+	var dssn = new DSSN();
 	
-	// listen for results
-	$(document).bind(dssn.READY, function(event, data){
-		$(document).unbind(event);
-		$.mobile.hidePageLoadingMsg();
-		
-		/*
-		$("#loadNetwork").data('knows', user.knows);
-		$("#loadActivities").data('stream', user.streams[0]);*/
+	// load and render profile
+	var loadAndRenderProfile = function(uri, fromRoot){
+		fromRoot = fromRoot || false;
+	
+		// listen for results
+		$(document).bind(dssn.READY, function(event, data){
+			$(document).unbind(event);
+			$.mobile.hidePageLoadingMsg();
 			
-		// change page
-		$.mobile.changePage("pages/profile.html");
+			/*
+			$("#loadNetwork").data('knows', user.knows);
+			$("#loadActivities").data('stream', user.streams[0]);*/
+				
+			// change page
+			if( fromRoot ){
+				$.mobile.changePage("pages/profile.html");
+			}else{
+				$.mobile.changePage("profile.html");
+			}
+		});
+		
+		// show loader
+		$.mobile.showPageLoadingMsg();
+		
+		// load profile
+		dssn.loadProfile(uri);
+	}
+		
+	// loads profile
+	$('#loadProfile').live('vclick',function(event){
+		// foaf profile uri
+		var resourceURI = "http://bob.lod2.eu/id/bob";
+		
+		loadAndRenderProfile(resourceURI, true);
 	});
 	
-	// show loader
-	$.mobile.showPageLoadingMsg();
+	// render profile data
+	$("#profilePage").live('pagebeforeshow', function(){
+		var user = dssn.user;
 	
-	// load profile
-	dssn.loadProfile(resourceURI);
-});
-
-// render profile data
-$("#profilePage").live('pagebeforeshow', function(){
-	var user = dssn.user;
-
-	$("#user_image").attr('src', user.pics[0]);
-	$("#user_name").text(user.nicks[0]);
-	$("#user_bday").text(user.bdays[0]);
-	$("#user_weblog").text(user.weblogs[0]);
-});
-
-// get and render feed
-$("#feedPage").live('pageshow', function(){
-	var user = dssn.user;
-	
-	var resourceURI = user.streams[0];
-	
-	// listen for results
-	$(document).bind(dssn.READY, function(event, data){
-		$(document).unbind(event);
-		$.mobile.hidePageLoadingMsg();
-		
-		var feed = data;
-		
-		$("#feed_title").text(feed.title);
-		$("#feedTemplate").tmpl(feed.items).appendTo("#feed_items");
-		
-		$("#feed_items").listview('refresh');
+		$("#user_image").attr('src', user.pics[0]);
+		$("#user_name").text(user.nicks[0]);
+		$("#user_bday").text(user.bdays[0]);
+		$("#user_weblog").text(user.weblogs[0]);
 	});
 	
-	// show loader
-	$.mobile.showPageLoadingMsg();
-	
-	dssn.loadFeed(resourceURI);
-});
-
-// get and render network
-$("#networkPage").live('pageshow', function(){
-	var user = dssn.user;
-	
-	$(document).bind(dssn.READY, function(event,data){
-		$(document).unbind(event);
-		$.mobile.hidePageLoadingMsg();
+	// get and render feed
+	$("#feedPage").live('pageshow', function(){
+		var user = dssn.user;
 		
-		console.log(data);
+		var resourceURI = user.streams[0];
 		
-		var network = data;
-		
-		$("#networkTemplate").tmpl(network).appendTo("#network_items");
-		
-		$("#network_items").listview('refresh');
-	});
-	
-	// show loader
-	$.mobile.showPageLoadingMsg();
+		// listen for results
+		$(document).bind(dssn.READY, function(event, data){
+			$(document).unbind(event);
+			$.mobile.hidePageLoadingMsg();
 			
-	dssn.getKnowsPeople(user.knows);
+			var feed = data;
+			
+			$("#feed_title").text(feed.title);
+			$("#feedTemplate").tmpl(feed.items).appendTo("#feed_items");
+			
+			$("#feed_items").listview('refresh');
+		});
+		
+		// show loader
+		$.mobile.showPageLoadingMsg();
+		
+		dssn.loadFeed(resourceURI);
+	});
+	
+	// get and render network
+	$("#networkPage").live('pageshow', function(){
+		var user = dssn.user;
+		
+		$(document).bind(dssn.READY, function(event,data){
+			$(document).unbind(event);
+			$.mobile.hidePageLoadingMsg();
+			
+			var network = data;
+			
+			$("#networkTemplate").tmpl(network).appendTo("#network_items");
+			
+			$("#network_items").listview('refresh');
+		});
+		
+		// show loader
+		$.mobile.showPageLoadingMsg();
+				
+		dssn.getKnowsPeople(user.knows);
+	});
+	
+	// show friend profile
+	$(".network_profile").live('vclick', function(event){
+		var url = $(this).attr('data');
+		
+		console.log(url);
+		
+		loadAndRenderProfile(url);
+	});
 });

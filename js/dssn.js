@@ -100,7 +100,7 @@ DSSN.prototype.getKnowsPeople = function(knows){
 			
 			var names = self.getValuesForProperty(userdb, "foaf:nick");
 			$.each(names, function(i, val){
-				res.push({name:val});
+				res.push({name:val, uri:value});
 			});
 			
 			if( --i == 0 ) $(document).trigger(self.READY, [res]);
