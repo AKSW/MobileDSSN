@@ -61,7 +61,7 @@ DSSN.prototype.loadProfile = function(resourceURI){
 			'streams': streams,
 			'knows': knows
 		};
-		$(document).trigger(self.READY, [self.user]);
+		self.trigger(self.READY, [self.user]);
 	})
 }
 
@@ -103,7 +103,7 @@ DSSN.prototype.getKnowsPeople = function(knows){
 				res.push({name:val, uri:value});
 			});
 			
-			if( --i == 0 ) $(document).trigger(self.READY, [res]);
+			if( --i == 0 ) self.trigger(self.READY, [res]);
 		});
 	});
 }
@@ -123,7 +123,12 @@ DSSN.prototype.loadFeed = function(uri){
         		'items': feed.items
         	}
         
-            $(document).trigger(self.READY, [data]);
+            self.trigger(self.READY, [data]);
         }
     });
 }
+
+// create new dssn controller
+var dssn = new DSSN();
+
+_.extend(dssn, Backbone.Events);

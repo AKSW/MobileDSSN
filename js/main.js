@@ -1,15 +1,16 @@
 // constructor
 $(document).ready(function(){
-	// create new dssn controller
-	var dssn = new DSSN();
-	
+	// last page 
+	// TODO: is there default thing for this in jqm?
+	var lastPage = "homePage";
+		
 	// load and render profile
 	var loadAndRenderProfile = function(uri, fromRoot){
 		fromRoot = fromRoot || false;
 	
 		// listen for results
-		$(document).bind(dssn.READY, function(event, data){
-			$(document).unbind(event);
+		dssn.bind(dssn.READY, function(event, data){
+			dssn.unbind(event);
 			$.mobile.hidePageLoadingMsg();
 			
 			/*
@@ -42,6 +43,8 @@ $(document).ready(function(){
 	// render profile data
 	$("#profilePage").live('pagebeforeshow', function(){
 		var user = dssn.user;
+		
+		lastPage = "profilePage";
 	
 		$("#user_image").attr('src', user.pics[0]);
 		$("#user_name").text(user.nicks[0]);
@@ -53,11 +56,13 @@ $(document).ready(function(){
 	$("#feedPage").live('pageshow', function(){
 		var user = dssn.user;
 		
+		lastPage = "feedPage";
+		
 		var resourceURI = user.streams[0];
 		
 		// listen for results
-		$(document).bind(dssn.READY, function(event, data){
-			$(document).unbind(event);
+		dssn.bind(dssn.READY, function(event, data){
+			dssn.unbind(event);
 			$.mobile.hidePageLoadingMsg();
 			
 			var feed = data;
@@ -78,8 +83,10 @@ $(document).ready(function(){
 	$("#networkPage").live('pageshow', function(){
 		var user = dssn.user;
 		
-		$(document).bind(dssn.READY, function(event,data){
-			$(document).unbind(event);
+		lastPage = "networkPage";
+		
+		dssn.bind(dssn.READY, function(event,data){
+			dssn.unbind(event);
 			$.mobile.hidePageLoadingMsg();
 			
 			var network = data;
@@ -93,6 +100,24 @@ $(document).ready(function(){
 		$.mobile.showPageLoadingMsg();
 				
 		dssn.getKnowsPeople(user.knows);
+	});
+	
+	// configure menu
+	$("#menuPage").live('pagebeforeshow', function(){
+		switch(lastPage){
+			case "profilePage":
+				$("#add-activity").hide();
+				$("#add-relation").hide();
+				break;
+			case "feedPage":
+				$("#add-activity").show();
+				$("#add-relation").hide();
+				break;
+			case "networkPage":
+				$("#add-activity").hide();
+				$("#add-relation").show();
+				break;
+		}
 	});
 	
 	// show friend profile
