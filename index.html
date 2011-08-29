@@ -41,6 +41,10 @@
 			<li><a href="${id}">${title}</a></li>
 		</script>
 		
+		<script id="networkTemplate" type="text/x-jquery-tmpl">
+			<li><a href="#">${name}</a></li>
+		</script>
+		
 			
 		<!-- home page -->
 		<div data-role="page" id="homePage">
@@ -49,48 +53,7 @@
 			</div>
 		
 			<div data-role="content">
-				<button id="loadProfile">Load Profile</button>
-			</div>
-		</div>
-		
-		<!-- profile page -->
-		<div data-role="page" id="profilePage">
-			<div data-role="header">
-				<h1 id="profile_title">MobileDSSN</h1>
-			</div>
-		
-			<div data-role="content">
-				<div class="ui-grid-a">
-					<div class="ui-block-a"><img class="userpic" id="user_image"></div>
-					<div class="ui-block-b"><strong id="user_name"></strong></div>
-				</div>
-				<hr />
-				<div>
-					Birthday: <strong id="user_bday"></strong>
-				</div>
-				<div>
-					Weblog: <strong id="user_weblog"></strong>
-				</div>
-				<div>
-					Knows: 
-					<ul data-role="listview" data-inset="true" id="user_knows">
-					</ul>
-				</div>
-				<div>
-					<button id="user_stream">Show Stream</button>
-				</div>
-			</div>
-		</div>
-		
-		<!-- feed page -->
-		<div data-role="page" id="feedPage">
-			<div data-role="header">
-				<h1 id="feed_title">MobileDSSN</h1>
-			</div>
-		
-			<div data-role="content">
-				<ul data-role="listview" data-inset="true" id="feed_items">
-				</ul>
+				<button id="loadProfile">Load Data</button>
 			</div>
 		</div>
 	</body>

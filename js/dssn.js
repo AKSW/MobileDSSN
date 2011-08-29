@@ -1,7 +1,9 @@
 function DSSN(){
 	// events
 	this.READY = "DSSNReady";
-	this.FINISHED = "DSSNFinished";
+	
+	// data
+	this.user;
 
 	// rdf2json converter uri
 	this.rdf2json = "http://rdf2json.aksw.org/?url=";
@@ -47,23 +49,19 @@ DSSN.prototype.loadProfile = function(resourceURI){
 		// get activity streams
 		var streams = self.getValuesForProperty(db, "dssn:activityFeed");
 		
-		// wait for all knows relations
-		$(document).bind(self.FINISHED, function(event, data){
-			$(document).unbind(event);
-			
-			var user = {
-				'nicks': nicks,
-				'pics': pics,
-				'bdays': bdays,
-				'weblogs': weblogs,
-				'streams': streams,
-				'knows': data
-			};
-			$(document).trigger('DSSNReady', [user]);
-		});
-		
-		// get knows
-		self.getKnowsPeople(db);
+		// get knows uris
+		var knows = self.getValuesForProperty(db, "foaf:knows");
+
+		// create user object		
+		self.user = {
+			'nicks': nicks,
+			'pics': pics,
+			'bdays': bdays,
+			'weblogs': weblogs,
+			'streams': streams,
+			'knows': knows
+		};
+		$(document).trigger(self.READY, [self.user]);
 	})
 }
 
@@ -84,16 +82,15 @@ DSSN.prototype.getValuesForProperty = function(db, property){
 /** 
  * Gets all foaf:knows persons from given db
  */
-DSSN.prototype.getKnowsPeople = function(db){
+DSSN.prototype.getKnowsPeople = function(knows){
 	var rdf2json = this.rdf2json;
 	var self = this;
 	
 	var res = [];
 	
-	var knows = db.where("?s foaf:knows ?user");
 	var i = knows.length;
-	knows.each(function(){
-		var user = this.user.value.toString();
+	$.each(knows, function(index, value){
+		var user = value;
 		var dataURL = rdf2json+encodeURIComponent(user);
 		$.getJSON(dataURL, function(data){
 			var userdb = $.rdf();
@@ -102,9 +99,11 @@ DSSN.prototype.getKnowsPeople = function(db){
 			userdb.prefix('aair', 'http://xmlns.notu.be/aair#');
 			
 			var names = self.getValuesForProperty(userdb, "foaf:nick");
-			res.push(names);
+			$.each(names, function(i, val){
+				res.push({name:val});
+			});
 			
-			if( --i == 0 ) $(document).trigger(self.FINISHED, [res]);
+			if( --i == 0 ) $(document).trigger(self.READY, [res]);
 		});
 	});
 }

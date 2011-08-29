@@ -7,6 +7,7 @@ $(document).ready(function(){
 	dssn = new DSSN();
 });
 
+// loads profile
 $('#loadProfile').live('vclick',function(event){
 	// foaf profile uri
 	var resourceURI = "http://bob.lod2.eu/id/bob";
@@ -16,19 +17,12 @@ $('#loadProfile').live('vclick',function(event){
 		$(document).unbind(event);
 		$.mobile.hidePageLoadingMsg();
 		
-		var user = data;
-		
-		$("#user_image").attr('src', user.pics[0]);
-		$("#user_name").text(user.nicks[0]);
-		$("#user_bday").text(user.bdays[0]);
-		$("#user_weblog").text(user.weblogs[0]);
-		for(var i in user.knows){
-			$("#user_knows").append("<li><a href='#'>"+user.knows[i]+"</a></li>");
-		}
-		$("#user_stream").data('stream', user.streams[0]);
+		/*
+		$("#loadNetwork").data('knows', user.knows);
+		$("#loadActivities").data('stream', user.streams[0]);*/
 			
 		// change page
-		$.mobile.changePage("#profilePage");
+		$.mobile.changePage("pages/profile.html");
 	});
 	
 	// show loader
@@ -38,8 +32,21 @@ $('#loadProfile').live('vclick',function(event){
 	dssn.loadProfile(resourceURI);
 });
 
-$("#user_stream").live('vclick', function(event){
-	var resourceURI = $(this).data('stream');
+// render profile data
+$("#profilePage").live('pagebeforeshow', function(){
+	var user = dssn.user;
+
+	$("#user_image").attr('src', user.pics[0]);
+	$("#user_name").text(user.nicks[0]);
+	$("#user_bday").text(user.bdays[0]);
+	$("#user_weblog").text(user.weblogs[0]);
+});
+
+// get and render feed
+$("#feedPage").live('pageshow', function(){
+	var user = dssn.user;
+	
+	var resourceURI = user.streams[0];
 	
 	// listen for results
 	$(document).bind(dssn.READY, function(event, data){
@@ -50,13 +57,35 @@ $("#user_stream").live('vclick', function(event){
 		
 		$("#feed_title").text(feed.title);
 		$("#feedTemplate").tmpl(feed.items).appendTo("#feed_items");
-					
-		// change page
-		$.mobile.changePage("#feedPage");
+		
+		$("#feed_items").listview('refresh');
 	});
 	
 	// show loader
 	$.mobile.showPageLoadingMsg();
 	
 	dssn.loadFeed(resourceURI);
+});
+
+// get and render network
+$("#networkPage").live('pageshow', function(){
+	var user = dssn.user;
+	
+	$(document).bind(dssn.READY, function(event,data){
+		$(document).unbind(event);
+		$.mobile.hidePageLoadingMsg();
+		
+		console.log(data);
+		
+		var network = data;
+		
+		$("#networkTemplate").tmpl(network).appendTo("#network_items");
+		
+		$("#network_items").listview('refresh');
+	});
+	
+	// show loader
+	$.mobile.showPageLoadingMsg();
+			
+	dssn.getKnowsPeople(user.knows);
 });
