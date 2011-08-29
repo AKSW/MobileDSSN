@@ -1,9 +1,17 @@
+// constructor
 function DSSN(){
 	// events
+	// external done loading event
 	this.READY = "DSSNReady";
-	
+	// internal done loading event
+	this.FINISHED = "DSSNFinished";
+		
 	// data
 	this.user;
+	this.knows;
+	this.feed;
+	// temp var
+	this.temp;
 
 	// rdf2json converter uri
 	this.rdf2json = "http://rdf2json.aksw.org/?url=";
@@ -11,7 +19,37 @@ function DSSN(){
 	this.ajaxproxy = "http://localhost/MobileDSSN/serverside/proxy.php?url=";
 }
 
-DSSN.prototype.loadProfile = function(resourceURI){
+// local store instance
+DSSN.prototype.ls = new Store('dssn');
+
+// user model
+DSSN.prototype.userModel = Backbone.Model.extend({
+	localStorage: DSSN.prototype.ls ,
+	initialize: function(){
+		var self = this;
+		this.bind('change:id', function(model, id) {
+			var lm = self.localStorage.find(model);
+			if( typeof lm != 'undefined' ){
+				self.attributes = lm;
+				self.attributes.local = true;
+			}
+		});
+	},
+	defaults: {
+		'local': false
+	}
+});
+
+// foaf:knows collection
+DSSN.prototype.knowsCollection = Backbone.Collection.extend({
+	model: DSSN.prototype.userModel
+});
+
+
+
+// loads profile into profile model
+DSSN.prototype.loadProfile = function(resourceURI, internal){
+	internal = internal || false;
 	// rdf-json uri
 	var loadingURI = this.rdf2json+encodeURIComponent(resourceURI);
 	
@@ -25,44 +63,65 @@ DSSN.prototype.loadProfile = function(resourceURI){
 	db.prefix('aair', 'http://xmlns.notu.be/aair#');
 	db.prefix('dssn', 'http://purl.org/net/dssn/');
 	
-	// get profile
-	$.getJSON(loadingURI, function(data){
-		// load data into main db
-		db.load(data);
-		
-		// get depiction
-		var pics = self.getValuesForProperty(db, "foaf:depiction");
-		//$("#user_image").attr('src', pics[0]);
-		
-		// get name
-		var nicks = self.getValuesForProperty(db, "foaf:nick");
-		//$("#user_name").text(names[0]);
-		
-		//get bday
-		var bdays = self.getValuesForProperty(db, "foaf:birthday");
-		//$("#user_bday").text(bdays[0]);
-		
-		//get weblog
-		var weblogs = self.getValuesForProperty(db, "foaf:weblog");
-		//$("#user_weblog").html("<a href='"+weblogs[0]+"'>"+weblog[0]+"</a>");
-		
-		// get activity streams
-		var streams = self.getValuesForProperty(db, "dssn:activityFeed");
-		
-		// get knows uris
-		var knows = self.getValuesForProperty(db, "foaf:knows");
-
-		// create user object		
-		self.user = {
-			'nicks': nicks,
-			'pics': pics,
-			'bdays': bdays,
-			'weblogs': weblogs,
-			'streams': streams,
-			'knows': knows
-		};
-		self.trigger(self.READY, [self.user]);
-	})
+	var user = new self.userModel();
+	user.set({'id': resourceURI});
+	
+	if( user.get('local') ){
+		if( internal ){
+			self.temp = user;
+			self.trigger(self.FINISHED);
+		}else{
+			self.user = user;
+			self.trigger(self.READY);
+		}
+	}else{
+		// get profile
+		$.getJSON(loadingURI, function(data){
+			// load data into main db
+			db.load(data);
+			
+			// get depiction
+			var pics = self.getValuesForProperty(db, "foaf:depiction");
+			//$("#user_image").attr('src', pics[0]);
+			
+			// get name
+			var nicks = self.getValuesForProperty(db, "foaf:nick");
+			//$("#user_name").text(names[0]);
+			
+			//get bday
+			var bdays = self.getValuesForProperty(db, "foaf:birthday");
+			//$("#user_bday").text(bdays[0]);
+			
+			//get weblog
+			var weblogs = self.getValuesForProperty(db, "foaf:weblog");
+			//$("#user_weblog").html("<a href='"+weblogs[0]+"'>"+weblog[0]+"</a>");
+			
+			// get activity streams
+			var streams = self.getValuesForProperty(db, "dssn:activityFeed");
+			
+			// get knows uris
+			var knows = self.getValuesForProperty(db, "foaf:knows");
+	
+			// create user object
+			user.set({
+				'nicknames': nicks,
+				'userpics': pics,
+				'birthdays': bdays,
+				'weblogs': weblogs,
+				'streams': streams,
+				'knows': knows
+			});
+			user.save();
+			
+			if( internal ){
+				self.temp = user;
+				self.trigger(self.FINISHED);
+			}else{
+				self.user = user;
+				self.trigger(self.READY);
+			}
+		});
+	};
 }
 
 /** 
@@ -86,26 +145,22 @@ DSSN.prototype.getKnowsPeople = function(knows){
 	var rdf2json = this.rdf2json;
 	var self = this;
 	
-	var res = [];
+	self.knows = new self.knowsCollection();
 	
-	var i = knows.length;
-	$.each(knows, function(index, value){
-		var user = value;
-		var dataURL = rdf2json+encodeURIComponent(user);
-		$.getJSON(dataURL, function(data){
-			var userdb = $.rdf();
-			userdb.load(data);
-			userdb.prefix('foaf', 'http://xmlns.com/foaf/0.1/');
-			userdb.prefix('aair', 'http://xmlns.notu.be/aair#');
+	var i = knows.length-1;
+
+	self.bind(self.FINISHED, function(event){
+		self.knows.add(self.temp);
 			
-			var names = self.getValuesForProperty(userdb, "foaf:nick");
-			$.each(names, function(i, val){
-				res.push({name:val, uri:value});
-			});
-			
-			if( --i == 0 ) self.trigger(self.READY, [res]);
-		});
+		if( --i < 0 ){
+			self.unbind(self.FINISHED);
+			self.trigger(self.READY);
+		}else{
+			self.loadProfile(knows[i], true);
+		}
 	});
+		
+	self.loadProfile(knows[i], true);
 }
 
 DSSN.prototype.loadFeed = function(uri){
@@ -117,18 +172,18 @@ DSSN.prototype.loadFeed = function(uri){
 	$.getFeed({
         url: reqURL,
         success: function(feed) {
-        	var data = {
+        	self.feed = {
         		'title': feed.title,
         		'link': feed.link,
         		'items': feed.items
         	}
         
-            self.trigger(self.READY, [data]);
+            self.trigger(self.READY);
         }
     });
 }
 
 // create new dssn controller
 var dssn = new DSSN();
-
+// extend with events
 _.extend(dssn, Backbone.Events);

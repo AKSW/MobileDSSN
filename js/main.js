@@ -1,5 +1,4 @@
-// constructor
-$(document).ready(function(){
+$(function(){
 	// last page 
 	// TODO: is there default thing for this in jqm?
 	var lastPage = "homePage";
@@ -9,8 +8,8 @@ $(document).ready(function(){
 		fromRoot = fromRoot || false;
 	
 		// listen for results
-		dssn.bind(dssn.READY, function(event, data){
-			dssn.unbind(event);
+		dssn.bind(dssn.READY, function(event){
+			dssn.unbind(dssn.READY);
 			$.mobile.hidePageLoadingMsg();
 			
 			/*
@@ -46,10 +45,10 @@ $(document).ready(function(){
 		
 		lastPage = "profilePage";
 	
-		$("#user_image").attr('src', user.pics[0]);
-		$("#user_name").text(user.nicks[0]);
-		$("#user_bday").text(user.bdays[0]);
-		$("#user_weblog").text(user.weblogs[0]);
+		$("#user_image").attr('src', user.get('userpics')[0]);
+		$("#user_name").text(user.get('nicknames')[0]);
+		$("#user_bday").text(user.get('birthdays')[0]);
+		$("#user_weblog").text(user.get('weblogs')[0]);
 	});
 	
 	// get and render feed
@@ -58,14 +57,14 @@ $(document).ready(function(){
 		
 		lastPage = "feedPage";
 		
-		var resourceURI = user.streams[0];
+		var resourceURI = user.get('streams')[0];
 		
 		// listen for results
 		dssn.bind(dssn.READY, function(event, data){
-			dssn.unbind(event);
+			dssn.unbind(dssn.READY);
 			$.mobile.hidePageLoadingMsg();
 			
-			var feed = data;
+			var feed = dssn.feed;
 			
 			$("#feed_title").text(feed.title);
 			$("#feedTemplate").tmpl(feed.items).appendTo("#feed_items");
@@ -85,13 +84,23 @@ $(document).ready(function(){
 		
 		lastPage = "networkPage";
 		
-		dssn.bind(dssn.READY, function(event,data){
-			dssn.unbind(event);
+		dssn.bind(dssn.READY, function(event){
+			dssn.unbind(dssn.READY);
 			$.mobile.hidePageLoadingMsg();
 			
-			var network = data;
+			var network = dssn.knows;
 			
-			$("#networkTemplate").tmpl(network).appendTo("#network_items");
+			$("#networkTemplate").tmpl(network.models, {
+				name: function(){
+					return this.data.attributes.nicknames[0];
+				},
+				uri: function(){
+					return this.data.id;
+				},
+				image: function(){
+					return this.data.attributes.userpics[0];
+				}
+			}).appendTo("#network_items");
 			
 			$("#network_items").listview('refresh');
 		});
@@ -99,7 +108,7 @@ $(document).ready(function(){
 		// show loader
 		$.mobile.showPageLoadingMsg();
 				
-		dssn.getKnowsPeople(user.knows);
+		dssn.getKnowsPeople(user.get('knows'));
 	});
 	
 	// configure menu
@@ -123,8 +132,6 @@ $(document).ready(function(){
 	// show friend profile
 	$(".network_profile").live('vclick', function(event){
 		var url = $(this).attr('data');
-		
-		console.log(url);
 		
 		loadAndRenderProfile(url);
 	});
