@@ -30,17 +30,30 @@ $(function(){
 		// load profile
 		dssn.loadProfile(uri);
 	}
+	
+	// check user
+	var checkCurrentUser = function(){
+		if(dssn.userURI != dssn.user.get('uri')){
+			$(".topmenu").css('display', 'none');
+		}else{
+			$(".topmenu").css('display', '');
+		}
+	}
 		
 	// loads profile
 	$('#loadProfile').live('vclick',function(event){
 		// foaf profile uri
 		var resourceURI = "http://bob.lod2.eu/id/bob";
 		
+		dssn.userURI = resourceURI;
+		
 		loadAndRenderProfile(resourceURI, true);
 	});
 	
 	// render profile data
-	$("#profilePage").live('pagebeforeshow', function(){
+	$("#profilePage").live('pageshow', function(){
+		checkCurrentUser();
+	
 		var user = dssn.user;
 		
 		lastPage = "profilePage";
@@ -53,6 +66,8 @@ $(function(){
 	
 	// get and render feed
 	$("#feedPage").live('pageshow', function(){
+		checkCurrentUser();
+	
 		var user = dssn.user;
 		
 		lastPage = "feedPage";
@@ -80,6 +95,8 @@ $(function(){
 	
 	// get and render network
 	$("#networkPage").live('pageshow', function(){
+		checkCurrentUser();
+	
 		var user = dssn.user;
 		
 		lastPage = "networkPage";

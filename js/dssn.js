@@ -6,12 +6,15 @@ function DSSN(){
 	// internal done loading event
 	this.FINISHED = "DSSNFinished";
 		
-	// data
+	// data store
 	this.user;
 	this.knows;
 	this.feed;
 	// temp var
 	this.temp;
+	
+	// curren user
+	this.userURI;
 
 	// rdf2json converter uri
 	this.rdf2json = "http://rdf2json.aksw.org/?url=";
@@ -44,8 +47,6 @@ DSSN.prototype.userModel = Backbone.Model.extend({
 DSSN.prototype.knowsCollection = Backbone.Collection.extend({
 	model: DSSN.prototype.userModel
 });
-
-
 
 // loads profile into profile model
 DSSN.prototype.loadProfile = function(resourceURI, internal){
@@ -104,6 +105,7 @@ DSSN.prototype.loadProfile = function(resourceURI, internal){
 	
 			// create user object
 			user.set({
+				'uri': resourceURI,
 				'nicknames': nicks,
 				'userpics': pics,
 				'birthdays': bdays,
