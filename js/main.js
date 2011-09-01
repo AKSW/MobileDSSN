@@ -152,4 +152,27 @@ $(function(){
 		
 		loadAndRenderProfile(url);
 	});
+	
+	// add relation button clicked
+	$("#addrelation").live('vclick', function(){
+		var subject = "<"+dssn.userURI+">";
+		var predicate = "<http://xmlns.com/foaf/0.1/>";
+		var object = "<"+$("#webiduri").val()+">";
+		
+		var epurl = dssn.userData.get("updates")[0];
+		console.log(epurl, epurl.split('?')[1]);
+		var graph = "http://bob.lod2.eu/"; //epurl.split('?')[1].replace("default-graph-uri=", "");
+		epurl = epurl.split('?')[0];
+		var url = dssn.ajaxproxy+epurl;
+		
+		var query = "INSERT DATA INTO <"+graph+"> { " +subject+" "+predicate+" "+object+" }";
+		
+		url += "?query=" + encodeURIComponent( query );
+		
+		console.log(query);
+		
+		$.getJSON(url, function(data){
+			console.log(data);
+		});
+	});
 });

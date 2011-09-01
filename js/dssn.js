@@ -15,6 +15,7 @@ function DSSN(){
 	
 	// curren user
 	this.userURI;
+	this.userData;
 
 	// rdf2json converter uri
 	this.rdf2json = "http://rdf2json.aksw.org/?url=";
@@ -72,6 +73,7 @@ DSSN.prototype.loadProfile = function(resourceURI, internal){
 			self.temp = user;
 			self.trigger(self.FINISHED);
 		}else{
+			if( resourceURI == self.userURI ) self.userData = user;
 			self.user = user;
 			self.trigger(self.READY);
 		}
@@ -83,25 +85,26 @@ DSSN.prototype.loadProfile = function(resourceURI, internal){
 			
 			// get depiction
 			var pics = self.getValuesForProperty(db, "foaf:depiction");
-			//$("#user_image").attr('src', pics[0]);
 			
 			// get name
 			var nicks = self.getValuesForProperty(db, "foaf:nick");
-			//$("#user_name").text(names[0]);
 			
 			//get bday
 			var bdays = self.getValuesForProperty(db, "foaf:birthday");
-			//$("#user_bday").text(bdays[0]);
 			
 			//get weblog
 			var weblogs = self.getValuesForProperty(db, "foaf:weblog");
-			//$("#user_weblog").html("<a href='"+weblogs[0]+"'>"+weblog[0]+"</a>");
-			
-			// get activity streams
-			var streams = self.getValuesForProperty(db, "dssn:activityFeed");
 			
 			// get knows uris
 			var knows = self.getValuesForProperty(db, "foaf:knows");
+			
+			// get DSSN streams and endpoints
+			// get activity streams
+			var streams = self.getValuesForProperty(db, "dssn:activityFeed");
+			
+			// get update endpoint
+			var updates = self.getValuesForProperty(db, "dssn:updateService");
+			
 	
 			// create user object
 			user.set({
@@ -110,8 +113,9 @@ DSSN.prototype.loadProfile = function(resourceURI, internal){
 				'userpics': pics,
 				'birthdays': bdays,
 				'weblogs': weblogs,
+				'knows': knows,
 				'streams': streams,
-				'knows': knows
+				'updates': updates
 			});
 			user.save();
 			
@@ -119,6 +123,7 @@ DSSN.prototype.loadProfile = function(resourceURI, internal){
 				self.temp = user;
 				self.trigger(self.FINISHED);
 			}else{
+				if( resourceURI == self.userURI ) self.userData = user;
 				self.user = user;
 				self.trigger(self.READY);
 			}
