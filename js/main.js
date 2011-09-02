@@ -43,7 +43,7 @@ $(function(){
 	// loads profile
 	$('#loadProfile').live('vclick',function(event){
 		// foaf profile uri
-		var resourceURI = "http://bob.lod2.eu/id/bob";
+		var resourceURI = "http://localhost/ontowiki/tim/foaf_Person/Bob";
 		
 		dssn.userURI = resourceURI;
 		
@@ -156,20 +156,18 @@ $(function(){
 	// add relation button clicked
 	$("#addrelation").live('vclick', function(){
 		var subject = "<"+dssn.userURI+">";
-		var predicate = "<http://xmlns.com/foaf/0.1/>";
+		var predicate = "<http://xmlns.com/foaf/0.1/knows>";
 		var object = "<"+$("#webiduri").val()+">";
 		
 		var epurl = dssn.userData.get("updates")[0];
-		console.log(epurl, epurl.split('?')[1]);
-		var graph = "http://bob.lod2.eu/"; //epurl.split('?')[1].replace("default-graph-uri=", "");
-		epurl = epurl.split('?')[0];
-		var url = dssn.ajaxproxy+epurl;
+		var graph = epurl.split('?')[1].replace("default-graph-uri=", "");
 		
 		var query = "INSERT DATA INTO <"+graph+"> { " +subject+" "+predicate+" "+object+" }";
 		
-		url += "?query=" + encodeURIComponent( query );
+		epurl += "&query=" + encodeURIComponent( query );
 		
-		console.log(query);
+		// form url with ajax proxy
+		var url = dssn.ajaxproxy+encodeURIComponent( epurl );
 		
 		$.getJSON(url, function(data){
 			console.log(data);
