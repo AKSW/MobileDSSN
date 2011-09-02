@@ -2,6 +2,7 @@ $(function(){
 	// last page 
 	// TODO: is there default thing for this in jqm?
 	var lastPage = "homePage";
+	var relationURI = null;
 		
 	// load and render profile
 	var loadAndRenderProfile = function(uri, fromRoot){
@@ -33,11 +34,11 @@ $(function(){
 	
 	// check user
 	var checkCurrentUser = function(){
-		if(dssn.userURI != dssn.user.get('uri')){
+		/*if(dssn.userURI != dssn.user.get('uri')){
 			$(".topmenu").css('display', 'none');
 		}else{
 			$(".topmenu").css('display', '');
-		}
+		}*/
 	}
 		
 	// loads profile
@@ -130,19 +131,33 @@ $(function(){
 	
 	// configure menu
 	$("#menuPage").live('pagebeforeshow', function(){
-		switch(lastPage){
-			case "profilePage":
-				$("#add-activity").hide();
-				$("#add-relation").hide();
-				break;
-			case "feedPage":
-				$("#add-activity").show();
-				$("#add-relation").hide();
-				break;
-			case "networkPage":
-				$("#add-activity").hide();
-				$("#add-relation").show();
-				break;
+		if(dssn.userURI != dssn.user.get('uri')){
+			$("#add-activity").hide();
+			$("#edit-view").hide();
+			$("#settings").hide();
+			
+			$("#add-relation").show();
+			$("#add-relation .ui-btn-text").text("Add as friend");
+			relationURI = dssn.user.get('uri');
+		}else{
+			$("#edit-view").show();
+			$("#settings").show();
+			$("#add-relation .ui-btn-text").text("Add relation");
+	
+			switch(lastPage){
+				case "profilePage":
+					$("#add-activity").hide();
+					$("#add-relation").hide();
+					break;
+				case "feedPage":
+					$("#add-activity").show();
+					$("#add-relation").hide();
+					break;
+				case "networkPage":
+					$("#add-activity").hide();
+					$("#add-relation").show();
+					break;
+			}
 		}
 	});
 	
@@ -151,6 +166,10 @@ $(function(){
 		var url = $(this).attr('data');
 		
 		loadAndRenderProfile(url);
+	});
+	
+	$("#addRelationPage").live('pagebeforeshow', function(){
+		if( relationURI != null ) $("#webiduri").val(relationURI);
 	});
 	
 	// add relation button clicked
@@ -172,5 +191,7 @@ $(function(){
 		$.getJSON(url, function(data){
 			console.log(data);
 		});
+		
+		$.mobile.changePage("profile.html");
 	});
 });

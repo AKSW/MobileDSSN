@@ -34,7 +34,11 @@ DSSN.prototype.userModel = Backbone.Model.extend({
 		this.bind('change:id', function(model, id) {
 			var lm = self.localStorage.find(model);
 			if( typeof lm != 'undefined' ){
-				self.attributes = lm;
+				if(typeof lm.attributes != 'undefined'){
+					self.attributes = lm.attributes;
+				}else{
+					self.attributes = lm;
+				}
 				self.attributes.local = true;
 			}
 		});
