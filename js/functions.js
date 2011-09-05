@@ -2,6 +2,7 @@
 // TODO: is there default thing for this in jqm?
 var lastPage = "homePage";
 var relationURI = null;
+var fromSearch = false;
 	
 // load and render profile
 var loadAndRenderProfile = function(uri, fromRoot){
@@ -35,8 +36,37 @@ var loadAndRenderProfile = function(uri, fromRoot){
 	dssn.loadProfile(uri);
 }
 
+// render profile data
+function renderProfile(){
+	checkCurrentUser();
+
+	var user = dssn.user;
+	
+	lastPage = "profilePage";
+
+	$("#user_image").attr('src', user.get('userpics')[0]);
+	$("#user_name").text(user.get('nicknames')[0]);
+	$("#user_bday").text(user.get('birthdays')[0]);
+	$("#user_weblog").text(user.get('weblogs')[0]);
+}
+
 // check user
 var checkCurrentUser = function(){
+	if( fromSearch ){
+		// position icon left
+		$(".homebtn").removeClass('ui-btn-icon-notext').addClass('ui-btn-icon-left');
+		// change home icon to left arrow
+		$(".homebtn .ui-icon").removeClass('ui-icon-home').addClass('ui-icon-arrow-l');
+		// change attributes
+		$(".homebtn").attr('href', 'searchres.html').data('rel', 'back').data('direction', 'reverse');//. data('iconpos', '').data('icon', 'arrow-l');
+		// change text
+		$(".homebtn .ui-btn-text").text("Back");
+		// show
+		$(".homebtn").show();
+		return;
+	}
+	
+	// toggle home
 	if(dssn.userURI != dssn.user.get('uri')){
 		$(".homebtn").show();
 	}else{

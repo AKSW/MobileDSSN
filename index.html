@@ -57,12 +57,12 @@
 		</script>
 		
 		<script id="networkTemplate" type="text/x-jquery-tmpl">
-			<li><a data="${$item.uri}" class="network_profile"><img src="${$item.image}">${$item.name}</a></li>
+			<li><a data-url="${$item.uri}" class="network_profile"><img src="${$item.image}">${$item.name}</a></li>
 		</script>
 		
 		<script id="searchTemplate" type="text/x-jquery-tmpl">
 			<li>
-				<a data="${link}" class="network_profile">
+				<a data-url="${link}" data-search="true" class="network_profile">
 					<h1>${$item.name}</h1>
 					<p>${link}</p>
 				</a>

@@ -9,19 +9,6 @@ $(function(){
 		loadAndRenderProfile(resourceURI, true);
 	});
 	
-	// render profile data
-	function renderProfile(){
-		checkCurrentUser();
-	
-		var user = dssn.user;
-		
-		lastPage = "profilePage";
-	
-		$("#user_image").attr('src', user.get('userpics')[0]);
-		$("#user_name").text(user.get('nicknames')[0]);
-		$("#user_bday").text(user.get('birthdays')[0]);
-		$("#user_weblog").text(user.get('weblogs')[0]);
-	}
 	// do rendering on show
 	$("#profilePage").live('pageshow', renderProfile);
 	
@@ -130,7 +117,10 @@ $(function(){
 	
 	// show friend profile
 	$(".network_profile").live('vclick', function(event){
-		var url = $(this).attr('data');
+		var url = $(this).data('url');
+		var search = $(this).data('search');
+		
+		fromSearch = search;
 		
 		loadAndRenderProfile(url);
 	});

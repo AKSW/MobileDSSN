@@ -8,27 +8,8 @@ $(function(){
 			searchResData = data;
 			console.log(searchResData);
 		
-			// append results
-			$("#search_items").empty();
-			$("#searchTemplate").tmpl(data.entries, {
-				name: function(){
-					return this.data.title[0].value;
-				}
-			}).appendTo("#search_items");
-			// refresh list
-			$("#search_items").listview("refresh");
-			
-			// assign next/prev btns
-			if( data.link != data.previous ){
-				$("#sprev").data('url', data.previous);
-			}else{
-				$("#sprev").data('url', '');
-			}
-			if( data.link != data.last ){
-				$("#snext").data('url', data.next);
-			}else{
-				$("#snext").data('url', '');
-			}
+			// render
+			renderData(data);
 					
 			// hide loader
 			$.mobile.hidePageLoadingMsg();
@@ -46,6 +27,35 @@ $(function(){
 		}
 	}
 	
+	var renderData = function(data){
+		// append results
+		$("#search_items").empty();
+		$("#searchTemplate").tmpl(data.entries, {
+			name: function(){
+				return this.data.title[0].value;
+			}
+		}).appendTo("#search_items");
+		// refresh list
+		$("#search_items").listview("refresh");
+		
+		// assign next/prev btns
+		if( data.link != data.previous ){
+			$("#sprev").data('url', data.previous);
+		}else{
+			$("#sprev").data('url', '');
+		}
+		if( data.link != data.last ){
+			$("#snext").data('url', data.next);
+		}else{
+			$("#snext").data('url', '');
+		}
+	}
+	
+	$("#searchResultPage").live("pagebeforeshow", function(){
+		if( searchResData != null ){
+			renderData(searchResData);
+		}
+	});
 		
 	// sindice search
 	$("#dosearch").live('vclick', function(){
@@ -53,6 +63,10 @@ $(function(){
 		url = dssn.ajaxproxy + encodeURIComponent( url );
 		
 		loadAndRenderSearch(url);
+	});
+	
+	$(".searchback").live('vclick', function(){
+		fromSearch = false;
 	});
 	
 	// show loader
@@ -66,7 +80,6 @@ $(function(){
 		$(this).removeClass('ui-btn-down-a').removeClass('ui-btn-active');
 		
 		var url = $(this).data('url');
-		console.log(url);
 		if(url.length > 0){
 			loadAndRenderSearch(url, true);
 		}else{
@@ -77,7 +90,6 @@ $(function(){
 		$(this).removeClass('ui-btn-down-a').removeClass('ui-btn-active');
 	
 		var url = $(this).data('url');
-		console.log(url);
 		if(url.length > 0){
 			loadAndRenderSearch(url, true);
 		}else{
