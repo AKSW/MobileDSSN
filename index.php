@@ -1,14 +1,17 @@
 <?php
 header('Access-Control-Allow-Origin: *');
-include_once("phplibs/graphite/arc/ARC2.php");
-include_once("phplibs/graphite/Graphite.php");
+define('MORIARTY_ARC_DIR', 'phplibs/graphite/arc/');
+
+include_once("phplibs/moriarty/simplegraph.class.php");
 
 if (isset($_REQUEST['url'])){
     $url = $_REQUEST['url'];
-    $graph = new Graphite();
-    $graph->load( $url );
+
+	$g = new SimpleGraph();
+	$g->read_data($url);
+    
     header('Content-type: application/json');
-    print $graph->serialize( "RDFJSON" );
+    print $g->to_json();
 } else {
     print "no url parameter, so I do not know where to fetch the rdf data from.";
 }
