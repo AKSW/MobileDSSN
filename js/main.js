@@ -18,10 +18,14 @@ $(function(){
 			$("#loadActivities").data('stream', user.streams[0]);*/
 				
 			// change page
-			if( fromRoot ){
-				$.mobile.changePage("pages/profile.html");
+			if( $.mobile.activePage.attr('id') == "profilePage" ){
+				renderProfile();
 			}else{
-				$.mobile.changePage("profile.html");
+				if( fromRoot ){
+					$.mobile.changePage("pages/profile.html");
+				}else{
+					$.mobile.changePage("profile.html");
+				}
 			}
 		});
 		
@@ -34,11 +38,11 @@ $(function(){
 	
 	// check user
 	var checkCurrentUser = function(){
-		/*if(dssn.userURI != dssn.user.get('uri')){
-			$(".topmenu").css('display', 'none');
+		if(dssn.userURI != dssn.user.get('uri')){
+			$(".homebtn").show();
 		}else{
-			$(".topmenu").css('display', '');
-		}*/
+			$(".homebtn").hide();
+		}//*/
 	}
 		
 	// loads profile
@@ -52,7 +56,7 @@ $(function(){
 	});
 	
 	// render profile data
-	$("#profilePage").live('pageshow', function(){
+	function renderProfile(){
 		checkCurrentUser();
 	
 		var user = dssn.user;
@@ -63,7 +67,9 @@ $(function(){
 		$("#user_name").text(user.get('nicknames')[0]);
 		$("#user_bday").text(user.get('birthdays')[0]);
 		$("#user_weblog").text(user.get('weblogs')[0]);
-	});
+	}
+	// do rendering on show
+	$("#profilePage").live('pageshow', renderProfile);
 	
 	// get and render feed
 	$("#feedPage").live('pageshow', function(){
@@ -159,6 +165,13 @@ $(function(){
 					break;
 			}
 		}
+	});
+	
+	// go home
+	$(".homebtn").live('vclick', function(){
+		var url = dssn.userURI;
+		
+		loadAndRenderProfile(url);
 	});
 	
 	// show friend profile
