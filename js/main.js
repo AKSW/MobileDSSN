@@ -1,50 +1,4 @@
 $(function(){
-	// last page 
-	// TODO: is there default thing for this in jqm?
-	var lastPage = "homePage";
-	var relationURI = null;
-		
-	// load and render profile
-	var loadAndRenderProfile = function(uri, fromRoot){
-		fromRoot = fromRoot || false;
-	
-		// listen for results
-		dssn.bind(dssn.READY, function(event){
-			dssn.unbind(dssn.READY);
-			$.mobile.hidePageLoadingMsg();
-			
-			/*
-			$("#loadNetwork").data('knows', user.knows);
-			$("#loadActivities").data('stream', user.streams[0]);*/
-				
-			// change page
-			if( $.mobile.activePage.attr('id') == "profilePage" ){
-				renderProfile();
-			}else{
-				if( fromRoot ){
-					$.mobile.changePage("pages/profile.html");
-				}else{
-					$.mobile.changePage("profile.html");
-				}
-			}
-		});
-		
-		// show loader
-		$.mobile.showPageLoadingMsg();
-		
-		// load profile
-		dssn.loadProfile(uri);
-	}
-	
-	// check user
-	var checkCurrentUser = function(){
-		if(dssn.userURI != dssn.user.get('uri')){
-			$(".homebtn").show();
-		}else{
-			$(".homebtn").hide();
-		}//*/
-	}
-		
 	// loads profile
 	$('#loadProfile').live('vclick',function(event){
 		// foaf profile uri
@@ -208,3 +162,6 @@ $(function(){
 		$.mobile.changePage("profile.html");
 	});
 });
+
+
+
