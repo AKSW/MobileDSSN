@@ -1,4 +1,4 @@
-<div data-role="page" id="addActivityPage">
+<div data-role="page" id="addActivityPage" data-add-back-btn="true">
 	<div data-role="header">
 		<h1>Add activity</h1>
 	</div>
@@ -6,7 +6,7 @@
 	<div data-role="content">
 		<!-- select activity: text, link, photo, video -->
 		<div data-role="fieldcontain">
-			<label for="activity-type" class="select">Choose type:</label>
+			<label for="activity-type" class="select">Activity type:</label>
 			<select name="activity-type" id="activity-type">
 				<option value="text">Text</option>
 				<option value="link">Link</option>
@@ -22,7 +22,7 @@
 		</div>
 		
 		<!-- link input -->
-		<div data-role="fieldcontain">
+		<div data-role="fieldcontain" id="link-holder" style="display:none;">
 			<label for="link">Activity link:</label>
 			<input type="url" name="link" id="link" value=""  />
 		</div>	
