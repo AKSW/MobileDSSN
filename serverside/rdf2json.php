@@ -4,7 +4,7 @@
 //include_once("phplibs/graphite/Graphite.php");
 define('MORIARTY_ARC_DIR', 'phplibs/graphite/arc/');
 
-include_once("../../moriarty/simplegraph.class.php");
+include_once("phplibs/moriarty/simplegraph.class.php");
 
 $url = $_REQUEST['url'];
 

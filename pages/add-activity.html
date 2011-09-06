@@ -5,8 +5,29 @@
 
 	<div data-role="content">
 		<!-- select activity: text, link, photo, video -->
+		<div data-role="fieldcontain">
+			<label for="activity-type" class="select">Choose type:</label>
+			<select name="activity-type" id="activity-type">
+				<option value="text">Text</option>
+				<option value="link">Link</option>
+				<option value="photo">Photo</option>
+				<option value="video">Video</option>
+			</select>
+		</div>
+		
 		<!-- text input -->
+		<div data-role="fieldcontain">
+			<label for="textarea">Activity text:</label>
+			<textarea cols="40" rows="8" name="textarea" id="textarea"></textarea>
+		</div>
+		
 		<!-- link input -->
+		<div data-role="fieldcontain">
+			<label for="link">Activity link:</label>
+			<input type="url" name="link" id="link" value=""  />
+		</div>	
+		
 		<!-- ok button -->
+		<a href="#" data-role="button" id="submit-activity">OK</a>
 	</div>
 </div>
