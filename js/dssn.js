@@ -18,9 +18,9 @@ function DSSN(){
 	this.userData;
 
 	// rdf2json converter uri
-	this.rdf2json = "http://localhost/MobileDSSN/serverside/rdf2json.php?url=";//"http://rdf2json.aksw.org/?url=";
+	this.rdf2json = "http://localhost/ajaxhelpers/rdf2json.php?url=";//"http://rdf2json.aksw.org/?url=";
 	// server proxy
-	this.ajaxproxy = "http://localhost/MobileDSSN/serverside/proxy.php?url=";
+	this.ajaxproxy = "http://localhost/ajaxhelpers/proxy.php?url=";
 }
 
 // local store instance
