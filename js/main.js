@@ -20,7 +20,7 @@ $(function(){
 		
 		lastPage = "feedPage";
 		
-		var resourceURI = user.get('streams')[0];
+		var resourceURI = user.get('dssn:activityFeed')[0];
 		
 		// listen for results
 		dssn.bind(dssn.READY, function(event, data){
@@ -57,13 +57,13 @@ $(function(){
 			
 			$("#networkTemplate").tmpl(network.models, {
 				name: function(){
-					return this.data.attributes.nicknames[0];
+					return this.data.attributes["foaf:nick"][0];
 				},
 				uri: function(){
 					return this.data.id;
 				},
 				image: function(){
-					return this.data.attributes.userpics[0];
+					return this.data.attributes["foaf:depiction"][0];
 				}
 			}).appendTo("#network_items");
 			
@@ -73,19 +73,19 @@ $(function(){
 		// show loader
 		$.mobile.showPageLoadingMsg();
 				
-		dssn.getKnowsPeople(user.get('knows'));
+		dssn.getKnowsPeople(user.get('foaf:knows'));
 	});
 	
 	// configure menu
 	$("#menuPage").live('pagebeforeshow', function(){
-		if(dssn.userURI != dssn.user.get('uri')){
+		if(dssn.userURI != dssn.user.get('id')){
 			$("#add-activity").hide();
 			$("#edit-view").hide();
 			$("#settings").hide();
 			
 			$("#add-relation").show();
 			$("#add-relation .ui-btn-text").text("Add as friend");
-			relationURI = dssn.user.get('uri');
+			relationURI = dssn.user.get('id');
 		}else{
 			$("#edit-view").show();
 			$("#settings").show();
@@ -135,7 +135,7 @@ $(function(){
 		var predicate = "<http://xmlns.com/foaf/0.1/knows>";
 		var object = "<"+$("#webiduri").val()+">";
 		
-		var epurl = dssn.userData.get("updates")[0];
+		var epurl = dssn.userData.get("dssn:updateService")[0];
 		var graph = epurl.split('?')[1].replace("default-graph-uri=", "");
 		
 		var query = "INSERT DATA INTO <"+graph+"> { " +subject+" "+predicate+" "+object+" }";

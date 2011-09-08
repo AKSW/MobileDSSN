@@ -10,7 +10,7 @@ $(function(){
 	
 	$("#submit-activity").live('vclick', function(){
 		// update endpoint
-		var epurl = dssn.userData.get("updates")[0];
+		var epurl = dssn.userData.get("dssn:updateService")[0];
 		// get default graph uri
 		var graph = epurl.split('?')[1].replace("default-graph-uri=", ""); // /default-graph-uri=(.+)/.exec(epurl)[1];
 		// get user

@@ -112,14 +112,13 @@ DSSN.prototype.loadProfile = function(resourceURI, internal){
 	
 			// create user object
 			user.set({
-				'uri': resourceURI,
-				'nicknames': nicks,
-				'userpics': pics,
-				'birthdays': bdays,
-				'weblogs': weblogs,
-				'knows': knows,
-				'streams': streams,
-				'updates': updates
+				'foaf:nick': nicks,
+				'foaf:depiction': pics,
+				'foaf:birthday': bdays,
+				'foaf:weblog': weblogs,
+				'foaf:knows': knows,
+				'dssn:activityFeed': streams,
+				'dssn:updateService': updates
 			});
 			user.save();
 			

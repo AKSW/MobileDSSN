@@ -44,10 +44,10 @@ function renderProfile(){
 	
 	lastPage = "profilePage";
 
-	$("#user_image").attr('src', user.get('userpics')[0]);
-	$("#user_name").text(user.get('nicknames')[0]);
-	$("#user_bday").text(user.get('birthdays')[0]);
-	$("#user_weblog").text(user.get('weblogs')[0]);
+	$("#user_image").attr('src', user.get('foaf:depiction')[0]);
+	$("#user_name").text(user.get('foaf:nick')[0]);
+	$("#user_bday").text(user.get('foaf:birthday')[0]);
+	$("#user_weblog").text(user.get('foaf:weblog')[0]);
 }
 
 // check user
@@ -67,7 +67,7 @@ var checkCurrentUser = function(){
 	}
 	
 	// toggle home
-	if(dssn.userURI != dssn.user.get('uri')){
+	if(dssn.userURI != dssn.user.get('id')){
 		$(".homebtn").show();
 	}else{
 		$(".homebtn").hide();
