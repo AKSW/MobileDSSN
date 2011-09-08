@@ -60,7 +60,7 @@
 		<!-- TEMPLATES -->
 		<!-- news feed item -->
 		<script id="feedTemplate" type="text/x-jquery-tmpl">
-			<li><a href="${id}">${title}</a></li>
+			<li><div id="${id}">${title}</div></li>
 		</script>
 		<!-- network profile item -->
 		<script id="networkTemplate" type="text/x-jquery-tmpl">
@@ -79,7 +79,7 @@
 		<script id="editTemplate" type="text/x-jquery-tmpl">
 			<div data-role="fieldcontain">
 				<label for="${id}">${label}:</label>
-				<input type="${type}" name="${id}" id="${id}" value="${value}"  />
+				<input type="${type}" name="${id}" id="${id}" data-value="${value}" data-pred="${predicate}" value="${value}"  />
 			</div>	
 		</script>
 		
