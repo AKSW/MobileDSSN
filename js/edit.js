@@ -57,9 +57,9 @@ $(function(){
 		var addQuery = "INSERT DATA INTO <"+graph+"> { ";
 		for(var i = 0; i < toSave.length; i++){
 			if( toSave[i].o.indexOf('http:') != -1 ){
-				addQuery += "<"+toSave[i].s+"> <"+prepareNs(toSave[i].p)+"> <"+toSave[i].o+"> . ";
+				addQuery += "<"+toSave[i].s+"> <"+dssn.prepareNs(toSave[i].p)+"> <"+toSave[i].o+"> . ";
 			}else{
-				addQuery += "<"+toSave[i].s+"> <"+prepareNs(toSave[i].p)+"> \""+toSave[i].o+"\" . ";
+				addQuery += "<"+toSave[i].s+"> <"+dssn.prepareNs(toSave[i].p)+"> \""+toSave[i].o+"\" . ";
 			}
 		}
 		// end insert
@@ -68,10 +68,10 @@ $(function(){
 		// form delete
 		var delQuery = "DELETE DATA FROM <"+graph+"> { "
 		for(var i = 0; i < toDel.length; i++){
-			if( toSave[i].o.indexOf('http:') != -1 ){
-				delQuery += "<"+toDel[i].s+"> <"+prepareNs(toDel[i].p)+"> <"+toDel[i].o+"> . ";
+			if( toDel[i].o.indexOf('http:') != -1 ){
+				delQuery += "<"+toDel[i].s+"> <"+dssn.prepareNs(toDel[i].p)+"> <"+toDel[i].o+"> . ";
 			}else{
-				delQuery += "<"+toDel[i].s+"> <"+prepareNs(toDel[i].p)+"> \""+toDel[i].o+"\" . ";
+				delQuery += "<"+toDel[i].s+"> <"+dssn.prepareNs(toDel[i].p)+"> \""+toDel[i].o+"\" . ";
 			}
 		}
 		// end delete 
@@ -99,14 +99,6 @@ $(function(){
 		
 		$.mobile.changePage("profile.html");
 	});
-	
-	var prepareNs = function(uri){
-		var urip = uri.split(":");
-		var ns = urip[0];
-		var val = urip[1];
-		
-		return dssn.namespaces[ns]+val;
-	};
 });
 
 /*

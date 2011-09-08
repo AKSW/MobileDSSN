@@ -41,41 +41,6 @@ $(function(){
 		dssn.loadFeed(resourceURI);
 	});
 	
-	// get and render network
-	$("#networkPage").live('pageshow', function(){
-		checkCurrentUser();
-	
-		var user = dssn.user;
-		
-		lastPage = "networkPage";
-		
-		dssn.bind(dssn.READY, function(event){
-			dssn.unbind(dssn.READY);
-			$.mobile.hidePageLoadingMsg();
-			
-			var network = dssn.knows;
-			
-			$("#networkTemplate").tmpl(network.models, {
-				name: function(){
-					return this.data.attributes["foaf:nick"][0];
-				},
-				uri: function(){
-					return this.data.id;
-				},
-				image: function(){
-					return this.data.attributes["foaf:depiction"][0];
-				}
-			}).appendTo("#network_items");
-			
-			$("#network_items").listview('refresh');
-		});
-		
-		// show loader
-		$.mobile.showPageLoadingMsg();
-				
-		dssn.getKnowsPeople(user.get('foaf:knows'));
-	});
-	
 	// configure menu
 	$("#menuPage").live('pagebeforeshow', function(){
 		if(dssn.userURI != dssn.user.get('id')){
@@ -95,14 +60,17 @@ $(function(){
 				case "profilePage":
 					$("#add-activity").hide();
 					$("#add-relation").hide();
+					$("#edit-view").attr('href', 'edit-profile.html');
 					break;
 				case "feedPage":
 					$("#add-activity").show();
 					$("#add-relation").hide();
+					$("#edit-view").attr('href', '#');
 					break;
 				case "networkPage":
 					$("#add-activity").hide();
 					$("#add-relation").show();
+					$("#edit-view").attr('href', 'edit-network.html');
 					break;
 			}
 		}
@@ -113,43 +81,6 @@ $(function(){
 		var url = dssn.userURI;
 		
 		loadAndRenderProfile(url);
-	});
-	
-	// show friend profile
-	$(".network_profile").live('vclick', function(event){
-		var url = $(this).data('url');
-		var search = $(this).data('search');
-		
-		fromSearch = search;
-		
-		loadAndRenderProfile(url);
-	});
-	
-	$("#addRelationPage").live('pagebeforeshow', function(){
-		if( relationURI != null ) $("#webiduri").val(relationURI);
-	});
-	
-	// add relation button clicked
-	$("#addrelation").live('vclick', function(){
-		var subject = "<"+dssn.userURI+">";
-		var predicate = "<http://xmlns.com/foaf/0.1/knows>";
-		var object = "<"+$("#webiduri").val()+">";
-		
-		var epurl = dssn.userData.get("dssn:updateService")[0];
-		var graph = epurl.split('?')[1].replace("default-graph-uri=", "");
-		
-		var query = "INSERT DATA INTO <"+graph+"> { " +subject+" "+predicate+" "+object+" }";
-		
-		epurl += "&query=" + encodeURIComponent( query );
-		
-		// form url with ajax proxy
-		var url = dssn.ajaxproxy+encodeURIComponent( epurl );
-		
-		$.getJSON(url, function(data){
-			console.log(data);
-		});
-		
-		$.mobile.changePage("profile.html");
 	});
 });
 

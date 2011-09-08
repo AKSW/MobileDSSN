@@ -60,15 +60,33 @@ DSSN.prototype.namespaces = {
 	'dssn': 'http://purl.org/net/dssn/'
 };
 
+// change ns: to uri
+DSSN.prototype.prepareNs = function(uri){
+	var urip = uri.split(":");
+	var ns = urip[0];
+	var val = urip[1];
+	
+	return this.namespaces[ns]+val;
+};
+
 // updates local profile data
 DSSN.prototype.updateLocalProfile = function(predicate, oldVal, newVal){
 	var data = this.userData.get(predicate);
 	
+	console.log(data);
+	
 	for(var i = 0; i < data.length; i++){
 		if( data[i] == oldVal ){
-			data[i] = newVal;
+			if(newVal == null){
+				data.splice(i,1);
+			}else{
+				data[i] = newVal;
+			}
+			break;
 		}
 	}
+	
+	console.log(data);
 	
 	var so = {};
 	so[predicate] = data;

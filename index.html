@@ -45,11 +45,14 @@
 		<!-- main js script -->
 		<script type="text/javascript" src="js/main.js"></script>
 		
-		<!-- search js script -->
-		<script type="text/javascript" src="js/search.js"></script>
+		<!-- activities js script -->
+		<script type="text/javascript" src="js/network.js"></script>
 		
 		<!-- activities js script -->
 		<script type="text/javascript" src="js/activities.js"></script>
+		
+		<!-- search js script -->
+		<script type="text/javascript" src="js/search.js"></script>
 		
 		<!-- profile edit js script -->
 		<script type="text/javascript" src="js/edit.js"></script>
@@ -65,6 +68,10 @@
 		<!-- network profile item -->
 		<script id="networkTemplate" type="text/x-jquery-tmpl">
 			<li><a data-url="${$item.uri}" class="network_profile"><img src="${$item.image}">${$item.name}</a></li>
+		</script>
+		<!-- network edit item -->
+		<script id="networkEditTemplate" type="text/x-jquery-tmpl">
+			<li><a data-url="${$item.uri}" class="del_network_profile"><img src="${$item.image}">${$item.name}</a><p class="ui-li-count">delete</p></li>
 		</script>
 		<!-- search result item -->
 		<script id="searchTemplate" type="text/x-jquery-tmpl">
