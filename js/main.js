@@ -30,7 +30,16 @@ $(function(){
 			var feed = dssn.feed;
 			
 			$("#feed_title").text(feed.title);
-			$("#feedTemplate").tmpl(feed.items).appendTo("#feed_items");
+			$("#feedTemplate").tmpl(feed.items,{
+				title: function(){
+					return this.data.title.split(":")[0];
+				},
+				post: function(){
+					var post = this.data.title.split(":");
+					post.splice(0,1);
+					return post.join(":");
+				}
+			}).appendTo("#feed_items");
 			
 			$("#feed_items").listview('refresh');
 		});

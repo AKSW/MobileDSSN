@@ -63,7 +63,10 @@
 		<!-- TEMPLATES -->
 		<!-- news feed item -->
 		<script id="feedTemplate" type="text/x-jquery-tmpl">
-			<li><div id="${id}">${title}</div></li>
+			<li>
+				<h1 id="${id}">${$item.post}</h1>
+				<p>${$item.title}</p>
+			</li>
 		</script>
 		<!-- network profile item -->
 		<script id="networkTemplate" type="text/x-jquery-tmpl">
