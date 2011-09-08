@@ -53,6 +53,29 @@ DSSN.prototype.knowsCollection = Backbone.Collection.extend({
 	model: DSSN.prototype.userModel
 });
 
+// namespaces
+DSSN.prototype.namespaces = {
+	'foaf': 'http://xmlns.com/foaf/0.1/',
+	'aair': 'http://xmlns.notu.be/aair#',
+	'dssn': 'http://purl.org/net/dssn/'
+};
+
+// updates local profile data
+DSSN.prototype.updateLocalProfile = function(predicate, oldVal, newVal){
+	var data = this.userData.get(predicate);
+	
+	for(var i = 0; i < data.length; i++){
+		if( data[i] == oldVal ){
+			data[i] = newVal;
+		}
+	}
+	
+	var so = {};
+	so[predicate] = data;
+	
+	this.userData.set(so);
+}
+
 // loads profile into profile model
 DSSN.prototype.loadProfile = function(resourceURI, internal){
 	internal = internal || false;
@@ -65,9 +88,10 @@ DSSN.prototype.loadProfile = function(resourceURI, internal){
 	
 	// create main rdf db
 	var db = $.rdf();
-	db.prefix('foaf', 'http://xmlns.com/foaf/0.1/');
-	db.prefix('aair', 'http://xmlns.notu.be/aair#');
-	db.prefix('dssn', 'http://purl.org/net/dssn/');
+	// assign namespaces
+	for(var ns in this.namespaces){
+		db.prefix(ns, this.namespaces[ns]);
+	}
 	
 	var user = new self.userModel();
 	user.set({'id': resourceURI});
