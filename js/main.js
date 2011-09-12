@@ -1,14 +1,37 @@
 $(function(){
+	// check if user default URI is set
+	var userURI = localStorage['userURI'];
+	// if not set load settings page
+	if( typeof userURI == "undefined" ){
+		console.log('no uri set');
+		$.mobile.changePage("pages/settings.html");
+	}else{
+		console.log('user: '+userURI);
+		dssn.userURI = userURI;
+		loadAndRenderProfile(userURI, true);
+	}
+	//});
+
 	// loads profile
-	$('#loadProfile').live('vclick',function(event){
+	/*$('#loadProfile').live('vclick',function(event){
 		// foaf profile uri
 		var resourceURI = "http://localhost/ontowiki/tim/foaf_Person/Bob";
 		
 		dssn.userURI = resourceURI;
 		
 		loadAndRenderProfile(resourceURI, true);
-	});
+	});*/
 	
+	$("#settingsPage").live('pagebeforeshow', function(){
+		$("#webiduri").val(localStorage['userURI']);
+	});
+		
+	$("#save-settings").live('vclick', function(){
+		var userURI = $("#webiduri").val();
+		localStorage['userURI'] = dssn.userURI = userURI;
+		loadAndRenderProfile(userURI);
+	});
+		
 	// do rendering on show
 	$("#profilePage").live('pageshow', renderProfile);
 	
