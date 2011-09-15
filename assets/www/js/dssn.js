@@ -18,9 +18,9 @@ function DSSN(){
 	this.userData;
 
 	// rdf2json converter uri
-	this.rdf2json = "http://localhost/ajaxhelpers/rdf2json.php?url=";//"http://rdf2json.aksw.org/?url=";
+	this.rdf2json = "http://139.18.248.135/ajaxhelpers/rdf2json.php?url=";//"http://rdf2json.aksw.org/?url=";
 	// server proxy
-	this.ajaxproxy = "http://localhost/ajaxhelpers/proxy.php?url=";
+	this.ajaxproxy = "";//"http://localhost/ajaxhelpers/proxy.php?url=";
 }
 
 // local store instance
@@ -100,6 +100,8 @@ DSSN.prototype.loadProfile = function(resourceURI, internal){
 	// rdf-json uri
 	var loadingURI = this.rdf2json+encodeURIComponent(resourceURI);
 	
+	console.log('uri2load: '+loadingURI);
+	
 	// get vars from instance
 	var self = this;
 	var rdf2json = this.rdf2json;
@@ -115,6 +117,7 @@ DSSN.prototype.loadProfile = function(resourceURI, internal){
 	user.set({'id': resourceURI});
 	
 	if( user.get('local') ){
+		console.log('local');
 		if( internal ){
 			self.temp = user;
 			self.trigger(self.FINISHED);
@@ -124,8 +127,10 @@ DSSN.prototype.loadProfile = function(resourceURI, internal){
 			self.trigger(self.READY);
 		}
 	}else{
+		console.log('web req');
 		// get profile
 		$.getJSON(loadingURI, function(data){
+			console.log('request result: '+data);
 			// load data into main db
 			db.load(data);
 			
