@@ -10,17 +10,6 @@ $(function(){
 		dssn.userURI = userURI;
 		loadAndRenderProfile(userURI, true);
 	}
-	//});
-
-	// loads profile
-	/*$('#loadProfile').live('vclick',function(event){
-		// foaf profile uri
-		var resourceURI = "http://localhost/ontowiki/tim/foaf_Person/Bob";
-		
-		dssn.userURI = resourceURI;
-		
-		loadAndRenderProfile(resourceURI, true);
-	});*/
 	
 	$("#settingsPage").live('pagebeforeshow', function(){
 		$("#webiduri").val(localStorage['userURI']);

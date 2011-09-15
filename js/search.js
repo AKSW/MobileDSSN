@@ -60,7 +60,7 @@ $(function(){
 	// sindice search
 	$("#dosearch").live('vclick', function(){
 		var url = "http://api.sindice.com/v3/search?q="+encodeURIComponent( $("#searchreq").val() )+"&fq=format:RDF&fq=class:foaf:person&format=json";
-		url = dssn.ajaxproxy + encodeURIComponent( url );
+		url = dssn.wrapAjaxURI( url );
 		
 		loadAndRenderSearch(url);
 	});

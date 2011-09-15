@@ -101,7 +101,7 @@ $(function(){
 		
 		// create url &
 		// form url with ajax proxy
-		var url = dssn.ajaxproxy+encodeURIComponent( epurl + "&query=" + encodeURIComponent( delQuery ) );
+		var url = dssn.wrapAjaxURI( epurl + "&query=" + encodeURIComponent( delQuery ) );
 		$.getJSON(url, function(data){
 			console.log(data);
 		});
@@ -137,7 +137,7 @@ $(function(){
 		epurl += "&query=" + encodeURIComponent( query );
 		
 		// form url with ajax proxy
-		var url = dssn.ajaxproxy+encodeURIComponent( epurl );
+		var url = dssn.wrapAjaxURI( epurl );
 		
 		$.getJSON(url, function(data){
 			console.log(data);
