@@ -18,7 +18,7 @@ function DSSN(){
 	this.userData;
 
 	// rdf2json converter uri
-	this.rdf2json = "http://139.18.248.135/ajaxhelpers/rdf2json.php?url=";//"http://rdf2json.aksw.org/?url=";
+	this.rdf2json = "http://rdf2json.aksw.org/?url="; //"http://139.18.248.135/ajaxhelpers/rdf2json.php?url=";//
 	// server proxy
 	this.ajaxproxy = "";//"http://localhost/ajaxhelpers/proxy.php?url=";
 }
