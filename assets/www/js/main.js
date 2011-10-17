@@ -79,6 +79,7 @@ $(function(){
 			$("#add-activity").hide();
 			$("#edit-view").hide();
 			$("#settings").hide();
+			$("#sync").hide();
 			
 			$("#add-relation").show();
 			$("#add-relation .ui-btn-text").text("Add as friend");
@@ -92,16 +93,19 @@ $(function(){
 				case "profilePage":
 					$("#add-activity").hide();
 					$("#add-relation").hide();
+					$("#sync").hide();
 					$("#edit-view").attr('href', 'edit-profile.html');
 					break;
 				case "feedPage":
 					$("#add-activity").show();
 					$("#add-relation").hide();
+					$("#sync").hide();
 					$("#edit-view").attr('href', '#');
 					break;
 				case "networkPage":
 					$("#add-activity").hide();
 					$("#add-relation").show();
+					$("#sync").show();
 					$("#edit-view").attr('href', 'edit-network.html');
 					break;
 			}
