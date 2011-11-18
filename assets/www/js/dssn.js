@@ -23,6 +23,14 @@ function DSSN(){
 	this.ajaxproxy = "";//"http://localhost/ajaxhelpers/proxy.php?url=";
 }
 
+DSSN.prototype.wrapAjaxURI = function(uri){
+	if(this.ajaxproxy != ""){
+		this.ajaxproxy+encodeURIComponent(uri);
+	}else{
+		return uri;
+	}
+}
+
 // local store instance
 DSSN.prototype.ls = new Store('dssn');
 
@@ -94,8 +102,114 @@ DSSN.prototype.updateLocalProfile = function(predicate, oldVal, newVal){
 	this.userData.set(so);
 }
 
-// loads profile into profile model
 DSSN.prototype.loadProfile = function(resourceURI, internal){
+	internal = internal || false;
+	
+	if(resourceURI.indexOf("/sparql") != -1 && resourceURI.indexOf("query=") != -1){
+		this.loadProfileFromEndpoint(resourceURI, internal);
+	}else{
+		this.loadProfileFromWeb(resourceURI, internal);
+	}
+}
+
+// loads profile into profile model from SPARQL endpoint
+DSSN.prototype.loadProfileFromEndpoint = function(resourceURI, internal){
+	internal = internal || false;
+	
+	// get subject uri
+	var subj = resourceURI.match(/<(.+?)>/)[1];
+	
+	// get vars from instance
+	var self = this;
+	
+	// create main rdf db
+	var db = $.rdf();
+	// assign namespaces
+	for(var ns in this.namespaces){
+		db.prefix(ns, this.namespaces[ns]);
+	}
+	
+	var user = new self.userModel();
+	user.set({'id': resourceURI});
+	
+	if( user.get('local') ){
+		if( internal ){
+			self.temp = user;
+			self.trigger(self.FINISHED);
+		}else{
+			if( resourceURI == self.userURI ) self.userData = user;
+			self.user = user;
+			self.trigger(self.READY);
+		}
+	}else{
+		// get profile
+		$.getJSON(resourceURI, function(data){
+			var res = data;
+			var pred, obj;
+			for(var i = 0; i < res.rows.length; i++){ 
+				pred = res.rows[i][0].value;
+				
+				if( res.rows[i][1].type == "uri" ){
+					obj = '<'+res.rows[i][1].value+'>';
+				}else if( res.rows[i][1].type == "literal" ){
+					obj = '"'+res.rows[i][1].value+'"';
+				}
+								
+				db.add('<'+subj+'> <'+pred+'> '+obj+' .')
+			}
+		
+			// load data into main db
+			//db.load();
+			
+			// get depiction
+			var pics = self.getValuesForProperty(db, "foaf:depiction");
+			
+			// get name
+			var nicks = self.getValuesForProperty(db, "foaf:nick");
+			
+			//get bday
+			var bdays = self.getValuesForProperty(db, "foaf:birthday");
+			
+			//get weblog
+			var weblogs = self.getValuesForProperty(db, "foaf:weblog");
+			
+			// get knows uris
+			var knows = self.getValuesForProperty(db, "foaf:knows");
+			
+			// get DSSN streams and endpoints
+			// get activity streams
+			var streams = self.getValuesForProperty(db, "dssn:activityFeed");
+			
+			// get update endpoint
+			var updates = self.getValuesForProperty(db, "dssn:updateService");
+			
+	
+			// create user object
+			user.set({
+				'foaf:nick': nicks,
+				'foaf:depiction': pics,
+				'foaf:birthday': bdays,
+				'foaf:weblog': weblogs,
+				'foaf:knows': knows,
+				'dssn:activityFeed': streams,
+				'dssn:updateService': updates
+			});
+			user.save();
+			
+			if( internal ){
+				self.temp = user;
+				self.trigger(self.FINISHED);
+			}else{
+				if( resourceURI == self.userURI ) self.userData = user;
+				self.user = user;
+				self.trigger(self.READY);
+			}
+		});
+	};
+}
+
+// loads profile into profile model
+DSSN.prototype.loadProfileFromWeb = function(resourceURI, internal){
 	internal = internal || false;
 	// rdf-json uri
 	var loadingURI = this.rdf2json+encodeURIComponent(resourceURI);

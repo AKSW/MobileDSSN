@@ -79,14 +79,14 @@ $(function(){
 		
 		// create url &
 		// form url with ajax proxy
-		var url = dssn.ajaxproxy+encodeURIComponent( epurl + "&query=" + encodeURIComponent( delQuery ) );
+		var url = dssn.wrapAjaxURI( epurl + "&query=" + encodeURIComponent( delQuery ) );
 		$.getJSON(url, function(data){
 			console.log(data);
 		});
 		
 		// create url &
 		// form url with ajax proxy
-		var url = dssn.ajaxproxy+encodeURIComponent( epurl + "&query=" + encodeURIComponent( addQuery ) );
+		var url = dssn.wrapAjaxURI( epurl + "&query=" + encodeURIComponent( addQuery ) );
 		$.getJSON(url, function(data){
 			console.log(data);
 		});
